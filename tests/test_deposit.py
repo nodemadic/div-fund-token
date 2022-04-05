@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-import brownie
+# import brownie
 from dotenv import load_dotenv
 import os
 
