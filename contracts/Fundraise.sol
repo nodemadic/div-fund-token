@@ -9,6 +9,7 @@ contract Fundraise is DividendTokenERC20, Ownable {
     address private _recipient;
     uint256 private _deadline;
     uint256 private _amountToRaise;
+    uint256 private _maxAmountToRaise;
 
     constructor(
         address recipient_,
@@ -20,6 +21,8 @@ contract Fundraise is DividendTokenERC20, Ownable {
         _recipient = recipient_;
         _deadline = block.timestamp + (hoursToRaise_ * 1 hours);
         _amountToRaise = amountToRaise_;
+        // Change this multiplier with further testing
+        _maxAmountToRaise = (_amountToRaise * 5) / 4;
     }
 
     // Shows amount of ETH given to this contract by wallet address
@@ -32,8 +35,8 @@ contract Fundraise is DividendTokenERC20, Ownable {
         // Ensure that funding goal was not met
         require(_isMinted == false);
 
-        // Check if deadline has passed
-        require(block.timestamp >= _deadline);
+        // // Check if deadline has passed
+        // require(block.timestamp >= _deadline);
 
         // Change flag to not be able to call certain functions
         // Calculate ratio of tokens distributed to ETH sent
@@ -76,6 +79,14 @@ contract Fundraise is DividendTokenERC20, Ownable {
     function pledge(uint256 amount) public payable {
         // Check if in the fundraising period
         require(block.timestamp < _deadline);
+
+        // Check if round is already closed
+        require(_isMinted == false);
+
+        // Check if already raised enough * multiplier
+        require(address(this).balance + msg.value <= _maxAmountToRaise);
+
+        // Check if amount they are sending was intended
         require(msg.value == amount);
 
         contributors.push(msg.sender);
