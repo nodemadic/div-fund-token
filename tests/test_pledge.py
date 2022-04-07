@@ -27,7 +27,7 @@ def test_cannot_pledge_if_token_already_minted(accounts, token):
     pledger_original_balance = accounts[0].balance()
     amount = pledger_original_balance // 4
 
-    token.pledge((amount), {"from": accounts[1], "amount": (amount)})
+    token.pledge(amount, {"from": accounts[1], "amount": (amount)})
     token.closeRound({"from": accounts[0]})
 
     with brownie.reverts():
@@ -38,7 +38,7 @@ def test_cannot_pledge_if_already_raised_enough(accounts, token):
     pledger_original_balance = accounts[0].balance()
     amount = pledger_original_balance // 4
 
-    token.pledge((amount), {"from": accounts[1], "amount": (amount)})
+    token.pledge(amount, {"from": accounts[1], "amount": (amount)})
 
     with brownie.reverts():
         token.pledge(amount, {"from": accounts[0], "amount": amount})
