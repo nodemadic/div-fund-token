@@ -11,5 +11,12 @@ def isolate(fn_isolation):
 
 
 @pytest.fixture(scope="module")
-def token(DividendTokenERC20, accounts):
-    return DividendTokenERC20.deploy(100000, {"from": accounts[0]})
+def token(Fundraise, accounts):
+    return Fundraise.deploy(
+        accounts[1],
+        "Dividend",
+        "DIV",
+        1,
+        5000000000000000000,
+        {"from": accounts[0]},
+    )
