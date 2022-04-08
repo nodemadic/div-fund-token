@@ -17,6 +17,6 @@ def token(Fundraise, accounts):
         "Dividend",
         "DIV",
         1,
-        50000000000000000000,
+        10000000000000000000,
         {"from": accounts[0]},
     )

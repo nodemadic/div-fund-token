@@ -17,7 +17,7 @@ contract Fundraise is DividendTokenERC20, Ownable {
         string memory symbol_,
         uint256 hoursToRaise_,
         uint256 amountToRaise_
-    ) DividendTokenERC20(10000, name_, symbol_) {
+    ) DividendTokenERC20(name_, symbol_) {
         _recipient = recipient_;
         _deadline = block.timestamp + (hoursToRaise_ * 1 hours);
         _amountToRaise = amountToRaise_;
@@ -35,6 +35,8 @@ contract Fundraise is DividendTokenERC20, Ownable {
         // Ensure that funding goal was not met
         require(_isMinted == false);
 
+        require(address(this).balance > _amountToRaise);
+
         // // Check if deadline has passed
         // require(block.timestamp >= _deadline);
 
@@ -42,12 +44,11 @@ contract Fundraise is DividendTokenERC20, Ownable {
         // Calculate ratio of tokens distributed to ETH sent
         // Mint appropriate number of tokens minus contract fee
         // Send recipient (escrow contract likely?) their ETH
-        if (address(this).balance > _amountToRaise) {
-            _isMinted = true;
-            _calculateTokenMint();
-            _mintForContributors();
-            payable(_recipient).transfer(_amountToRaise);
-        }
+
+        _isMinted = true;
+        _calculateTokenMint();
+        _mintForContributors();
+        payable(_recipient).transfer(_amountToRaise);
         // Leftover ETH can be sent back to token buyers in the
         // form of a dividend
     }
@@ -66,6 +67,7 @@ contract Fundraise is DividendTokenERC20, Ownable {
 
     // Then mint the 0.25% for the contract owner
     function _mintForContributors() private {
+        require(contributors[0] == msg.sender, "Value doesn't exist");
         for (uint256 i = 0; i < contributors.length; i++) {
             uint256 _tokensToMint = amountContributed[contributors[i]] *
                 _tokensPerEth;
@@ -84,7 +86,8 @@ contract Fundraise is DividendTokenERC20, Ownable {
         require(_isMinted == false);
 
         // Check if already raised enough * multiplier
-        require(address(this).balance + msg.value <= _maxAmountToRaise);
+        // FIX THIS CHECK STATEMENT
+        require(msg.value <= _maxAmountToRaise);
 
         // Check if amount they are sending was intended
         require(msg.value == amount);

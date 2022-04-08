@@ -4,13 +4,9 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 contract DividendTokenERC20 is ERC20 {
-    constructor(
-        uint256 initialSupply,
-        string memory name_,
-        string memory symbol_
-    ) ERC20(name_, symbol_) {
-        _mint(msg.sender, initialSupply);
-    }
+    constructor(string memory name_, string memory symbol_)
+        ERC20(name_, symbol_)
+    {}
 
     // Amount to scale all fund calculations within contract by
 
