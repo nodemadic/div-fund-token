@@ -32,7 +32,7 @@ contract Fundraise is DividendTokenERC20, Ownable {
     address[] public contributors;
 
     function closeRound() public onlyOwner {
-        // Ensure that funding goal was not met
+        // Ensure that token wasn't already minted
         require(_isMinted == false);
 
         require(address(this).balance > _amountToRaise);
@@ -59,21 +59,21 @@ contract Fundraise is DividendTokenERC20, Ownable {
 
     // Not full 10000 because contract owner takes 0.25% of any raise
     function _calculateTokenMint() private {
-        _tokensPerEth = 9975 / (address(this).balance);
+        _tokensPerEth = 99750000000000000000000 / (address(this).balance);
     }
 
-    // Iterate over array of contributers and mint appropriate number
+    // Iterate over array of contributors and mint appropriate number
     // of tokens using the ratio calculated previously
 
     // Then mint the 0.25% for the contract owner
     function _mintForContributors() private {
         require(contributors[0] == msg.sender, "Value doesn't exist");
         for (uint256 i = 0; i < contributors.length; i++) {
-            uint256 _tokensToMint = amountContributed[contributors[i]] *
-                _tokensPerEth;
+            uint256 _tokensToMint = (amountContributed[contributors[i]] *
+                _tokensPerEth) / 1000000000000000000;
             _mint(contributors[i], _tokensToMint);
         }
-        _mint(owner(), 25);
+        _mint(owner(), 100000 - totalSupply());
     }
 
     // Basic locking away funds for a set timeframe function
