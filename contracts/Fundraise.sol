@@ -57,7 +57,7 @@ contract Fundraise is DividendTokenERC20, Ownable {
     // Ratio of tokens to mint per ETH contributed
     uint256 private _tokensPerEth;
 
-    // Not full 10000 because contract owner takes 0.25% of any raise
+    // Not full 100000 because contract owner takes 0.25% of any raise
     function _calculateTokenMint() private {
         _tokensPerEth = 99750000000000000000000 / (address(this).balance);
     }
@@ -67,7 +67,6 @@ contract Fundraise is DividendTokenERC20, Ownable {
 
     // Then mint the 0.25% for the contract owner
     function _mintForContributors() private {
-        require(contributors[0] == msg.sender, "Value doesn't exist");
         for (uint256 i = 0; i < contributors.length; i++) {
             uint256 _tokensToMint = (amountContributed[contributors[i]] *
                 _tokensPerEth) / 1000000000000000000;
@@ -79,6 +78,12 @@ contract Fundraise is DividendTokenERC20, Ownable {
     // Basic locking away funds for a set timeframe function
     // Adds user information to a map and array for minting later
     function pledge(uint256 amount) public payable {
+        // Check if amount they are sending was intended
+        require(msg.value == amount);
+
+        // Check if pledging nonzero amount
+        require(msg.value > 0);
+
         // Check if in the fundraising period
         require(block.timestamp < _deadline);
 
@@ -89,10 +94,9 @@ contract Fundraise is DividendTokenERC20, Ownable {
         // FIX THIS CHECK STATEMENT
         require(msg.value <= _maxAmountToRaise);
 
-        // Check if amount they are sending was intended
-        require(msg.value == amount);
-
-        contributors.push(msg.sender);
+        if (amountContributed[msg.sender] == 0) {
+            contributors.push(msg.sender);
+        }
         amountContributed[msg.sender] += amount;
     }
 
