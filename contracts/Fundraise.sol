@@ -5,11 +5,11 @@ import "./DividendTokenERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract Fundraise is DividendTokenERC20, Ownable {
-    bool private _isMinted = false;
-    address private _recipient;
-    uint256 private _deadline;
-    uint256 private _amountToRaise;
-    uint256 private _maxAmountToRaise;
+    bool public isMinted = false;
+    address public recipient;
+    uint256 public deadline;
+    uint256 public amountToRaise;
+    uint256 public maxAmountToRaise;
 
     constructor(
         address recipient_,
@@ -18,11 +18,11 @@ contract Fundraise is DividendTokenERC20, Ownable {
         uint256 hoursToRaise_,
         uint256 amountToRaise_
     ) DividendTokenERC20(name_, symbol_) {
-        _recipient = recipient_;
-        _deadline = block.timestamp + (hoursToRaise_ * 1 hours);
-        _amountToRaise = amountToRaise_;
+        recipient = recipient_;
+        deadline = block.timestamp + (hoursToRaise_ * 1 hours);
+        amountToRaise = amountToRaise_;
         // Change this multiplier with further testing
-        _maxAmountToRaise = (_amountToRaise * 5) / 4;
+        maxAmountToRaise = (amountToRaise * 5) / 4;
     }
 
     // Shows amount of ETH given to this contract by wallet address
@@ -33,9 +33,9 @@ contract Fundraise is DividendTokenERC20, Ownable {
 
     function closeRound() public onlyOwner {
         // Ensure that token wasn't already minted
-        require(_isMinted == false);
+        require(isMinted == false);
 
-        require(address(this).balance > _amountToRaise);
+        require(address(this).balance > amountToRaise);
 
         // // Check if deadline has passed
         // require(block.timestamp >= _deadline);
@@ -45,10 +45,10 @@ contract Fundraise is DividendTokenERC20, Ownable {
         // Mint appropriate number of tokens minus contract fee
         // Send recipient (escrow contract likely?) their ETH
 
-        _isMinted = true;
+        isMinted = true;
         _calculateTokenMint();
         _mintForContributors();
-        payable(_recipient).transfer(_amountToRaise);
+        payable(recipient).transfer(amountToRaise);
         // Leftover ETH can be sent back to token buyers in the
         // form of a dividend
     }
@@ -85,14 +85,14 @@ contract Fundraise is DividendTokenERC20, Ownable {
         require(msg.value > 0);
 
         // Check if in the fundraising period
-        require(block.timestamp < _deadline);
+        require(block.timestamp < deadline);
 
         // Check if round is already closed
-        require(_isMinted == false);
+        require(isMinted == false);
 
         // Check if already raised enough * multiplier
         // FIX THIS CHECK STATEMENT
-        require(msg.value <= _maxAmountToRaise);
+        require(msg.value <= maxAmountToRaise);
 
         if (amountContributed[msg.sender] == 0) {
             contributors.push(msg.sender);
@@ -106,10 +106,10 @@ contract Fundraise is DividendTokenERC20, Ownable {
         // before funds are sent to seller
 
         // Ensure that funding goal was not met
-        require(_isMinted == false);
+        require(isMinted == false);
 
         // Check if deadline has passed
-        require(block.timestamp >= _deadline);
+        require(block.timestamp >= deadline);
 
         uint256 amount = amountContributed[msg.sender];
         amountContributed[msg.sender] = 0;
