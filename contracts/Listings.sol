@@ -74,4 +74,13 @@ contract Listings {
             _tokenId
         );
     }
+
+    function getListingDetails(uint256 _listingId)
+        external
+        view
+        returns (Listing memory listing)
+    {
+        Listing memory _listing = listings[_listingId];
+        return _listing;
+    }
 }
