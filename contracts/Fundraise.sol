@@ -94,11 +94,12 @@ contract Fundraise is DividendTokenERC20, Ownable {
         require(_amount <= maxAmountToRaise);
         require(address(this).balance <= maxAmountToRaise);
 
-        // FIX THIS CHECK STATEMENT
-        // require(address(this).balance <= maxAmountToRaise - _amount);
+        // If array doesnt contain pledger, add pledger to array
         if (amountContributed[msg.sender] == 0) {
             contributors.push(msg.sender);
         }
+
+        // Update the mapping
         amountContributed[msg.sender] += _amount;
     }
 
