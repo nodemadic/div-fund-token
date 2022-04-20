@@ -77,12 +77,12 @@ contract Fundraise is DividendTokenERC20, Ownable {
 
     // Basic locking away funds for a set timeframe function
     // Adds user information to a map and array for minting later
-    function pledge(uint256 amount) public payable {
+    function pledge(uint256 _amount) public payable {
         // Check if amount they are sending was intended
-        require(msg.value == amount);
+        require(msg.value == _amount);
 
         // Check if pledging nonzero amount
-        require(msg.value > 0);
+        require(_amount > 0);
 
         // Check if in the fundraising period
         require(block.timestamp < deadline);
@@ -91,13 +91,15 @@ contract Fundraise is DividendTokenERC20, Ownable {
         require(isMinted == false);
 
         // Check if already raised enough * multiplier
-        // FIX THIS CHECK STATEMENT
-        require(msg.value <= maxAmountToRaise);
+        require(_amount <= maxAmountToRaise);
+        require(address(this).balance <= maxAmountToRaise);
 
+        // FIX THIS CHECK STATEMENT
+        // require(address(this).balance <= maxAmountToRaise - _amount);
         if (amountContributed[msg.sender] == 0) {
             contributors.push(msg.sender);
         }
-        amountContributed[msg.sender] += amount;
+        amountContributed[msg.sender] += _amount;
     }
 
     function getRefund() public {
