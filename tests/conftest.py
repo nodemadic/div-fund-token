@@ -36,3 +36,10 @@ def nft(MyToken, accounts):
     return MyToken.deploy(
         {"from": accounts[0]},
     )
+
+
+@pytest.fixture(scope="module")
+def listings(Listings, accounts):
+    return Listings.deploy(
+        {"from": accounts[0]},
+    )

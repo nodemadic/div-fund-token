@@ -3,8 +3,9 @@ pragma solidity ^0.8.0;
 
 import "./Fundraise.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
 
-contract Listings {
+contract Listings is IERC721Receiver {
     struct Listing {
         uint256 id;
         Fundraise fundraiseContract;
@@ -17,6 +18,15 @@ contract Listings {
     uint256 public listingCount;
 
     // Should add an event to emit
+
+    function onERC721Received(
+        address _operator,
+        address _from,
+        uint256 _tokenId,
+        bytes memory _data
+    ) public override returns (bytes4) {
+        return this.onERC721Received.selector;
+    }
 
     function createListing(
         address _NFTaddress,
