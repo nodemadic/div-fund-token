@@ -4,7 +4,7 @@ from brownie import chain
 
 def test_can_get_refund(accounts, fundraise):
     pledger_original_balance = accounts[0].balance()
-    amount = pledger_original_balance // 16
+    amount = (pledger_original_balance // 10) - 1
 
     fundraise.pledge(amount, {"from": accounts[0], "amount": amount})
     chain.sleep(4000)
@@ -17,11 +17,9 @@ def test_can_get_refund(accounts, fundraise):
 
 def test_cannot_get_refund_if_token_minted(accounts, fundraise):
     pledger_original_balance = accounts[0].balance()
-    amount1 = pledger_original_balance // 16
-    amount2 = pledger_original_balance // 4
+    amount = pledger_original_balance // 10
 
-    fundraise.pledge(amount1, {"from": accounts[0], "amount": (amount1)})
-    fundraise.pledge(amount2, {"from": accounts[1], "amount": (amount2)})
+    fundraise.pledge(amount, {"from": accounts[0], "amount": (amount)})
     fundraise.closeRound({"from": accounts[0]})
 
     with brownie.reverts():
@@ -30,7 +28,7 @@ def test_cannot_get_refund_if_token_minted(accounts, fundraise):
 
 def test_cannot_get_refund_before_deadline(accounts, fundraise):
     pledger_original_balance = accounts[0].balance()
-    amount = pledger_original_balance // 16
+    amount = (pledger_original_balance // 10) - 1
 
     fundraise.pledge(amount, {"from": accounts[0], "amount": (amount)})
 
@@ -40,7 +38,7 @@ def test_cannot_get_refund_before_deadline(accounts, fundraise):
 
 def test_cannot_be_refunded_eth_twice(accounts, fundraise):
     pledger_original_balance = accounts[0].balance()
-    amount = pledger_original_balance // 16
+    amount = (pledger_original_balance // 10) - 1
 
     fundraise.pledge(amount, {"from": accounts[0], "amount": (amount)})
     chain.sleep(4000)
@@ -54,7 +52,7 @@ def test_cannot_be_refunded_eth_twice(accounts, fundraise):
 
 def test_removes_value_from_mapping(accounts, fundraise):
     pledger_original_balance = accounts[0].balance()
-    amount = pledger_original_balance // 16
+    amount = (pledger_original_balance // 10) - 1
 
     fundraise.pledge(amount, {"from": accounts[0], "amount": (amount)})
     chain.sleep(4000)

@@ -35,7 +35,7 @@ contract Fundraise is DividendTokenERC20, Ownable {
         // Ensure that token wasn't already minted
         require(isMinted == false);
 
-        require(address(this).balance > amountToRaise);
+        require(address(this).balance >= amountToRaise);
 
         // // Check if deadline has passed
         // require(block.timestamp >= _deadline);
