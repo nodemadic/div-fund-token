@@ -29,3 +29,10 @@ def fundraise(Fundraise, accounts):
         10000000000000000000,
         {"from": accounts[0]},
     )
+
+
+@pytest.fixture(scope="module")
+def nft(MyToken, accounts):
+    return MyToken.deploy(
+        {"from": accounts[0]},
+    )
