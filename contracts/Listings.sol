@@ -12,7 +12,6 @@ contract Listings is IERC721Receiver {
         address NFTaddress;
         uint256 tokenId;
         address NFTowner;
-        bool active;
     }
     mapping(uint256 => Listing) public listings;
     uint256 public listingCount;
@@ -54,8 +53,7 @@ contract Listings is IERC721Receiver {
             _fundraiseContract,
             _NFTaddress,
             _tokenId,
-            address(msg.sender),
-            true
+            address(msg.sender)
         );
         listings[listingCount] = listing;
         listingCount++;
