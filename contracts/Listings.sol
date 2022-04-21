@@ -61,7 +61,7 @@ contract Listings is IERC721Receiver {
         listingCount++;
     }
 
-    function withdrawNFT(uint256 _listingId) public {
+    function unsuccessfulRaiseWithdrawNFT(uint256 _listingId) public {
         Listing memory _listing = listings[_listingId];
 
         address _NFTowner = _listing.NFTowner;
@@ -88,9 +88,16 @@ contract Listings is IERC721Receiver {
     function getListingDetails(uint256 _listingId)
         external
         view
-        returns (Listing memory listing)
+        returns (Listing memory)
     {
-        Listing memory _listing = listings[_listingId];
-        return _listing;
+        return listings[_listingId];
+    }
+
+    function getListingFundraiseContract(uint256 _listingId)
+        external
+        view
+        returns (Fundraise)
+    {
+        return listings[_listingId].fundraiseContract;
     }
 }
